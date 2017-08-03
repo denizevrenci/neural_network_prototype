@@ -1,0 +1,51 @@
+sudo: required
+
+language: cpp
+
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - cmake
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - cmake
+            - clang-5.0
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+
+    - os: osx
+      osx_image: xcode9.2
+      env:
+        # OCLint comes preinstalled and conflicts with GCC.
+        - MATRIX_EVAL="brew cask uninstall oclint && brew install gcc && CC=gcc-7 && CXX=g++-7"
+
+    - os: osx
+      osx_image: xcode9.2
+      env:
+        - MATRIX_EVAL="CC=clang && CXX=clang++"
+
+before_install:
+  - eval "${MATRIX_EVAL}"
+
+before_script:
+  - mkdir build
+  - cd build
+  - cmake ..
+
+script:
+  - cmake --build .
