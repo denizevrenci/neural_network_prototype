@@ -3,7 +3,7 @@
 #include <tuple>
 
 #include "common.h"
-#include "impl/tuple.h"
+#include "details/tuple.h"
 #include "layer.h"
 
 namespace nnp {

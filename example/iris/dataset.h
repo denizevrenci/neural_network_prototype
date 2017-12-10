@@ -9,7 +9,7 @@
 #include <random>
 #include <stdexcept>
 
-#include <libnnp/tensor.h>
+#include <nnp/tensor.h>
 
 namespace dset {
 

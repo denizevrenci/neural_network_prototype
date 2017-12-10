@@ -2,7 +2,7 @@
 
 namespace nnp {
 
-namespace impl {
+namespace details {
 
 template <typename ForwardIterator>
 size_t argmax(ForwardIterator begin, ForwardIterator end) {
@@ -19,6 +19,6 @@ size_t argmax(ForwardIterator begin, ForwardIterator end) {
 	return maxIdx;
 }
 
-} // namespace impl
+} // namespace details
 
 } // namespace nnp

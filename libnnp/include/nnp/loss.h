@@ -5,7 +5,7 @@
 #include <cmath>
 #include <numeric>
 
-#include "impl/misc.h"
+#include "details/misc.h"
 #include "tensor.h"
 
 namespace nnp {
@@ -56,7 +56,7 @@ public:
 	static Tensor<Float, SIZE, BATCH_SIZE> getGradient(Tensor<PFloat, SIZE, BATCH_SIZE> probs
 		, const Tensor<GFloat, SIZE, BATCH_SIZE>& groundTruth) {
 		for (size_t ii = 0; ii != probs.batchSize(); ++ii) {
-			probs(impl::argmax(&groundTruth(0, ii), &(groundTruth(0, ii + 1))), ii) -= Float{1};
+			probs(details::argmax(&groundTruth(0, ii), &(groundTruth(0, ii + 1))), ii) -= Float{1};
 			for (size_t jj = 0; jj != probs.size(); ++jj)
 				probs(jj, ii) /= probs.batchSize();
 		}

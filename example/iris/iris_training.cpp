@@ -2,9 +2,9 @@
 #include <iostream>
 #include <random>
 
-#include <libnnp/impl/misc.h>
-#include <libnnp/network.h>
-#include <libnnp/loss.h>
+#include <nnp/details/misc.h>
+#include <nnp/network.h>
+#include <nnp/loss.h>
 
 #include "dataset.h"
 
@@ -48,8 +48,8 @@ int main(int argc, char** argv) {
 			auto out = baseNetwork.forward(data.testInput());
 			size_t matchCount = 0;
 			for (size_t jj = 0; jj != out.batchSize(); ++jj)
-				matchCount += nnp::impl::argmax(&out(0, jj), &out(0, jj + 1))
-					== nnp::impl::argmax(&data.testCrossVal()(0, jj), &data.testCrossVal()(0, jj + 1));
+				matchCount += nnp::details::argmax(&out(0, jj), &out(0, jj + 1))
+					== nnp::details::argmax(&data.testCrossVal()(0, jj), &data.testCrossVal()(0, jj + 1));
 			std::cout << std::setw(8) << ii << std::setw(10) << loss << std::setw(15)
 				<< trainingNetwork.propagate(data.validationInput(), data.validationCrossVal(), 1e-5f)
 				<< std::setw(17) << static_cast<double>(matchCount) / out.batchSize() << std::endl;
