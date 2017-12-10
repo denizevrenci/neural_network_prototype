@@ -1,5 +1,9 @@
 # Neural Network Prototype and Iris dataset example
 
+Platform | Build status
+---------|-------------:
+Linux<br>OSX | [![Build Status](https://travis-ci.org/denizevrenci/neural_network_prototype.svg?branch=master)](https://travis-ci.org/denizevrenci/neural_network_prototype)
+
 ## Building and testing
 ```sh
 mkdir build && cd build && cmake .. && cmake --build .
