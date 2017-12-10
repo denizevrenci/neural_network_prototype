@@ -19,7 +19,7 @@ Adding a loss layer to a `nnp::TupleNetwork` and calling the `propagate()` funct
 Calling the `forward()` function of `nnp::TupleNetwork` returns the output tensor from the outermost layer. This can be used at test time.
 
 ## Iris dataset example
-After the project is built run the program by passing it the path of the iris dataset.
+After the project is built, run the program by passing it the path of the iris dataset.
 
 ```sh
 ./build/example/iris/iris_training example/iris/iris.data
