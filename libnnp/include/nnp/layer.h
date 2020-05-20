@@ -206,6 +206,9 @@ template <typename Float = float, size_t NODE_C = RESIZEABLE, size_t INPUT_C = R
 using LinearLayer = ComputationalLayer<LinearActivation, Float, NODE_C, INPUT_C>;
 
 template <typename Float = float, size_t NODE_C = RESIZEABLE, size_t INPUT_C = RESIZEABLE>
+using ReluLayer = ComputationalLayer<ReluActivation, Float, NODE_C, INPUT_C>;
+
+template <typename Float = float, size_t NODE_C = RESIZEABLE, size_t INPUT_C = RESIZEABLE>
 using SigmoidLayer = ComputationalLayer<SigmoidActivation, Float, NODE_C, INPUT_C>;
 
 } // namespace nnp

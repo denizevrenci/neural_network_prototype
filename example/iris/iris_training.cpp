@@ -32,10 +32,10 @@ int main(int argc, char** argv)
 	dset::Data data(argv[1]);
 
 	using BaseNetwork =
-		nnp::TupleNetwork<nnp::SigmoidLayer<float, 15, 4>, nnp::LinearLayer<float, 3, 15>>;
+		nnp::TupleNetwork<nnp::ReluLayer<float, 5, 4>, nnp::LinearLayer<float, 3, 5>>;
 
 	BaseNetwork baseNetwork{
-		nnp::SigmoidLayer<float, 15, 4>{gen}, nnp::LinearLayer<float, 3, 15>(gen)};
+		nnp::ReluLayer<float, 5, 4>{gen}, nnp::LinearLayer<float, 3, 5>(gen)};
 
 	using TrainingNetwork = nnp::Network<BaseNetwork&, nnp::SoftMaxLayer<float>>;
 

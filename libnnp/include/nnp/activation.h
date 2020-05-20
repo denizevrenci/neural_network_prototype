@@ -25,6 +25,34 @@ public:
 	}
 };
 
+class ReluActivation
+{
+public:
+	template <typename Float, size_t INPUT_C, size_t BATCH_SIZE>
+	static Tensor<Float, INPUT_C, BATCH_SIZE> forward(Tensor<Float, INPUT_C, BATCH_SIZE> input)
+	{
+		for (auto& ii : input)
+			ii = std::max(Float{0}, ii);
+		return input;
+	}
+
+	template <typename Float, size_t INPUT_C, size_t BATCH_SIZE>
+	static Tensor<Float, INPUT_C, BATCH_SIZE> backward(
+		const Tensor<Float, INPUT_C, BATCH_SIZE>& relu, Tensor<Float, INPUT_C, BATCH_SIZE> gradient)
+	{
+		assert(
+			relu.size() == gradient.size() && relu.batchSize() == gradient.batchSize());
+
+		auto reluIt = relu.begin();
+		for (auto& gg : gradient)
+		{
+			gg *= Float(*reluIt >= 0 ? 1 : 0);
+			++reluIt;
+		}
+		return gradient;
+	}
+};
+
 class SigmoidActivation
 {
 public:
