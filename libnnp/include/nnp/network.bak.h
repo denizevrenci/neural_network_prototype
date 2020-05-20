@@ -9,11 +9,12 @@
 namespace nnp {
 
 template <typename Layer, typename NextLayer>
-class SingleLayerNetwork {
+class SingleLayerNetwork
+{
 public:
 	SingleLayerNetwork(NextLayer& nextLayer)
-		: m_nextLayer(&nextLayer) {
-	}
+		: m_nextLayer(&nextLayer)
+	{}
 
 	static constexpr size_t layerCount() { return 1; }
 
@@ -23,7 +24,8 @@ public:
 
 	template <typename Float, size_t BATCH_SIZE = RESIZEABLE>
 	Tensor<Float, outputCount(), BATCH_SIZE>
-		forward(const Tensor<Float, inputCount(), BATCH_SIZE>& input) {
+		forward(const Tensor<Float, inputCount(), BATCH_SIZE>& input)
+	{
 		return m_layer.forward(input);
 	}
 
@@ -34,7 +36,6 @@ public:
 
 	}*/
 
-
 private:
 	Layer m_layer;
 	NextLayer* m_nextLayer;
@@ -44,7 +45,8 @@ template <typename Float = float, size_t NODE_C = RESIZEABLE, size_t INPUT_C = R
 using SigmoidLayerN = SingleLayerNetwork<SigmoidLayer<Float, NODE_C, INPUT_C>>;
 
 template <typename... Subnets>
-class TupleNetwork {
+class TupleNetwork
+{
 	using SubnetTuple = std::tuple<Subnets...>;
 
 	template <size_t IDX>
@@ -53,7 +55,8 @@ class TupleNetwork {
 public:
 	static constexpr size_t subnetCount() { return sizeof...(Subnets); }
 
-	static constexpr size_t layerCount() {
+	static constexpr size_t layerCount()
+	{
 		LayerCountHelper helper;
 		impl::forEach<SubnetTuple>(helper);
 		return helper.sum;
@@ -67,16 +70,17 @@ public:
 
 	constexpr const auto& inSubnet() const { return getSubnet<subnetCount() - 1>(); }*/
 
-	static constexpr size_t outputCount() {
-		return SubnetType<0>::outputCount();
-	}
+	static constexpr size_t outputCount() { return SubnetType<0>::outputCount(); }
 
-	static constexpr size_t inputCount() {
+	static constexpr size_t inputCount()
+	{
 		return SubnetType<subnetCount() - 1>::inputCount();
 	}
 
 	template <typename InputFloat, size_t BATCH_SIZE = RESIZEABLE>
-	Tensor<InputFloat, outputCount(), BATCH_SIZE> forward(const Tensor<InputFloat, inputCount(), BATCH_SIZE>& input) {
+	Tensor<InputFloat, outputCount(), BATCH_SIZE>
+		forward(const Tensor<InputFloat, inputCount(), BATCH_SIZE>& input)
+	{
 		return ForwardHelper<0, InputFloat, BATCH_SIZE>()(this, input);
 	}
 
@@ -85,11 +89,14 @@ public:
 	}*/
 
 private:
-	static_assert(subnetCount() > 0, "There must be at least one subnet in an IterativeNetwork");
+	static_assert(
+		subnetCount() > 0, "There must be at least one subnet in an IterativeNetwork");
 
-	struct LayerCountHelper {
+	struct LayerCountHelper
+	{
 		template <typename Subnet>
-		constexpr void operator ()() {
+		constexpr void operator()()
+		{
 			sum += Subnet::layerCount();
 		}
 
@@ -97,17 +104,24 @@ private:
 	};
 
 	template <size_t SUBNET_IDX, typename InputFloat, size_t BATCH_SIZE>
-	struct ForwardHelper {
-		Tensor<InputFloat, SubnetType<SUBNET_IDX>::outputCount(), BATCH_SIZE>
-			operator ()(TupleNetwork* object, const Tensor<InputFloat, inputCount(), BATCH_SIZE>& input) {
-			return object->getSubnet<SUBNET_IDX>().forward(ForwardHelper<SUBNET_IDX + 1, InputFloat, BATCH_SIZE>()(object, input));
+	struct ForwardHelper
+	{
+		Tensor<InputFloat, SubnetType<SUBNET_IDX>::outputCount(), BATCH_SIZE> operator()(
+			TupleNetwork* object, const Tensor<InputFloat, inputCount(), BATCH_SIZE>& input)
+		{
+			return object->getSubnet<SUBNET_IDX>().forward(
+				ForwardHelper<SUBNET_IDX + 1, InputFloat, BATCH_SIZE>()(object, input));
 		}
 	};
 
 	template <typename InputFloat, size_t BATCH_SIZE>
-	struct ForwardHelper<subnetCount() - 1, InputFloat, BATCH_SIZE> {
+	struct ForwardHelper<subnetCount() - 1, InputFloat, BATCH_SIZE>
+	{
 		Tensor<InputFloat, SubnetType<subnetCount() - 1>::outputCount(), BATCH_SIZE>
-			operator ()(TupleNetwork* object, const Tensor<InputFloat, inputCount(), BATCH_SIZE>& input) {
+			operator()(
+				TupleNetwork* object,
+				const Tensor<InputFloat, inputCount(), BATCH_SIZE>& input)
+		{
 			return object->getSubnet<subnetCount() - 1>().forward(input);
 		}
 	};
@@ -115,10 +129,16 @@ private:
 	SubnetTuple m_subnets;
 
 	template <size_t IDX>
-	constexpr auto& getSubnet() { return std::get<IDX>(m_subnets); }
+	constexpr auto& getSubnet()
+	{
+		return std::get<IDX>(m_subnets);
+	}
 
 	template <size_t IDX>
-	constexpr const auto& getSubnet() const { return std::get<IDX>(m_subnets); }
+	constexpr const auto& getSubnet() const
+	{
+		return std::get<IDX>(m_subnets);
+	}
 };
 
 } // namespace nnp

@@ -23,13 +23,15 @@ constexpr size_t TRAIN_SET_SIZE = DATASET_SIZE * TRAIN_RATIO;
 constexpr size_t VALIDATION_SET_SIZE = DATASET_SIZE * VALIDATION_RATIO;
 constexpr size_t TEST_SET_SIZE = DATASET_SIZE * TEST_RATIO;
 
-enum class IrisFlower : uint8_t {
+enum class IrisFlower : uint8_t
+{
 	SETOSA,
 	VERSICOLOR,
 	VIRGINICA
 };
 
-IrisFlower toIrisFlower(const char* str) {
+IrisFlower toIrisFlower(const char* str)
+{
 	constexpr char SETOSA_STR[] = "Iris-setosa";
 	constexpr char VERSICOLOR_STR[] = "Iris-versicolor";
 	constexpr char VIRGINICA_STR[] = "Iris-virginica";
@@ -43,19 +45,23 @@ IrisFlower toIrisFlower(const char* str) {
 		throw std::runtime_error("Failed parsing iris flower type");
 }
 
-struct IrisData {
+struct IrisData
+{
 	std::array<float, 4> feat;
 	IrisFlower type;
 };
 
-std::array<IrisData, DATASET_SIZE> loadIrisData(const char* filePath) {
+std::array<IrisData, DATASET_SIZE> loadIrisData(const char* filePath)
+{
 	std::array<IrisData, DATASET_SIZE> data;
 	std::ifstream irisFile(filePath);
 	char buf[16]; // Length of longest string expected.
-	for (size_t ii = 0; ii != DATASET_SIZE; ++ii) {
+	for (size_t ii = 0; ii != DATASET_SIZE; ++ii)
+	{
 		auto& datum = data[ii];
 		char** dummy = nullptr;
-		for (size_t ii = 0; ii != 4; ++ii) {
+		for (size_t ii = 0; ii != 4; ++ii)
+		{
 			irisFile.getline(buf, sizeof(buf), ',');
 			datum.feat[ii] = std::strtof(buf, dummy);
 		}
@@ -67,15 +73,20 @@ std::array<IrisData, DATASET_SIZE> loadIrisData(const char* filePath) {
 
 } // namespace details
 
-class Data {
+class Data
+{
 public:
-	explicit Data(const char* filePath) {
+	explicit Data(const char* filePath)
+	{
 		auto data = details::loadIrisData(filePath);
 		std::shuffle(data.begin(), data.end(), std::mt19937{});
 		fillDataSet(data, m_trainingInput, m_trainingCrossVal, 0);
 		fillDataSet(data, m_validationInput, m_validationCrossVal, details::TRAIN_SET_SIZE);
-		fillDataSet(data, m_testInput, m_testCrossVal
-			, details::TRAIN_SET_SIZE + details::VALIDATION_SET_SIZE);
+		fillDataSet(
+			data,
+			m_testInput,
+			m_testCrossVal,
+			details::TRAIN_SET_SIZE + details::VALIDATION_SET_SIZE);
 	}
 
 	const auto& trainingInput() const { return m_trainingInput; }
@@ -99,17 +110,19 @@ private:
 	nnp::Tensor<float, 3, details::TEST_SET_SIZE> m_testCrossVal;
 
 	template <size_t SIZE>
-	void fillDataSet(const std::array<details::IrisData, details::DATASET_SIZE>& data
-		, nnp::Tensor<float, 4, SIZE>& input
-		, nnp::Tensor<float, 3, SIZE>& crossVal
-		, size_t offset) {
-		for (size_t ii = 0; ii != SIZE; ++ii) {
+	void fillDataSet(
+		const std::array<details::IrisData, details::DATASET_SIZE>& data,
+		nnp::Tensor<float, 4, SIZE>& input,
+		nnp::Tensor<float, 3, SIZE>& crossVal,
+		size_t offset)
+	{
+		for (size_t ii = 0; ii != SIZE; ++ii)
+		{
 			const auto& datum = data[ii + offset];
 			for (size_t jj = 0; jj != 4; ++jj)
 				input(jj, ii) = datum.feat[jj];
 			for (size_t jj : {0, 1, 2})
-				crossVal(jj, ii)
-					= jj == (size_t)datum.type ? 1.f : 0.f;
+				crossVal(jj, ii) = jj == (size_t)datum.type ? 1.f : 0.f;
 		}
 	}
 };
