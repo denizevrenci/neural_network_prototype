@@ -10,7 +10,7 @@ include(DownloadProject)
 download_project(
 	PROJ dlib_proj
 	GIT_REPOSITORY https://github.com/davisking/dlib.git
-	GIT_TAG v19.7
+	GIT_TAG d71497d4669c73d09899bb4b7e49864625d77772
 	UPDATE_DISCONNECTED 1
 	QUIET
 )
