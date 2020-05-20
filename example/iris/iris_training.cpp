@@ -43,10 +43,10 @@ int main(int argc, char** argv)
 
 	std::cout << "Epoch      Training loss  Validation loss  Test accuracy" << std::endl;
 	std::cout << std::fixed << std::setprecision(5);
-	for (size_t ii = 0; ii != 10001; ++ii)
+	for (size_t ii = 0; ii != 15001; ++ii)
 	{
 		auto loss = trainingNetwork.propagate(
-			data.trainingInput(), data.trainingCrossVal(), 0.5f, 1e-5f);
+			data.trainingInput(), data.trainingCrossVal(), 0.002f, 5e-5f);
 		if (ii % 100 == 0)
 		{
 			auto out = baseNetwork.forward(data.testInput());
@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 			std::cout
 				<< std::setw(8) << ii << std::setw(10) << loss << std::setw(15)
 				<< trainingNetwork.propagate(
-					data.validationInput(), data.validationCrossVal(), 1e-5f)
+					data.validationInput(), data.validationCrossVal(), 5e-5f)
 				<< std::setw(17) << static_cast<double>(matchCount) / out.batchSize()
 				<< std::endl;
 		}
